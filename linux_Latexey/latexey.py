@@ -9,12 +9,12 @@ APP_TITLE = 'Latexey'
 TRAY_TOOLTIP = 'Latexey'
 APP_ICON = os.path.dirname(os.path.realpath(__file__))+'/icon.png'
 TRAY_ICON = os.path.dirname(os.path.realpath(__file__))+'/icon.png'
-ENABLE_DICT = True
 
 LATEX_COMMANDS = REPLACEMENTS + COMBININGMARKS
 
 WIDTH_INIT = p['WIDTH_INIT']
 VPAD = p['VPAD']
+ENABLE_DICT = p['ENABLE_DICT']
 
 class TaskBarIcon(wx.adv.TaskBarIcon):
 
@@ -57,8 +57,8 @@ class Frame(wx.Frame):
 			pos=wx.Point(wx.GetMousePosition()[0], wx.GetMousePosition()[1]), 
 			title=APP_TITLE)
 		self.readyPasteEvent, self.EVT_READY_PASTE = wx.lib.newevent.NewEvent()
-		self.lastMousePos = wx.Point(0, 0)
 		self.screenheight = wx.SystemSettings.GetMetric(wx.SYS_SCREEN_Y)
+		self.lastMousePos = wx.Point(0, 0)
 		self.val = ''
 		self.panel = wx.Panel(self)
 		self.popup = Dictionary(self)
@@ -71,6 +71,7 @@ class Frame(wx.Frame):
 
 		self.initSizer()
 		self.refit()
+
 		self.initBind()
 		self.setIcon(APP_ICON)
 		self.text_input.SetFocus()
@@ -110,11 +111,12 @@ class Frame(wx.Frame):
 		self.SetIcon(icon)
 
 	def dragWin(self, event):
-		if event.LeftIsDown():
+		if (event is None) or (event.LeftIsDown()):
 			windowX, windowY = self.lastMousePos
 			screenX, screenY = wx.GetMousePosition()
 			self.Move(wx.Point(screenX - windowX, screenY - windowY))
-		event.Skip()
+		if event is not None:
+			event.Skip()
  
 	def clickWin(self, event):
 		pos = self.ScreenToClient(event.GetEventObject().ClientToScreen(event.GetPosition()))
@@ -179,6 +181,7 @@ class Frame(wx.Frame):
 
 	def showWindow(self, event):
 		self.Show()
+		self.dragWin(event=None)
  
 	def exitApp(self, event):
 		closeApp()
@@ -193,7 +196,8 @@ class Frame(wx.Frame):
 		index = self.text_input.GetInsertionPoint()
 		separated_input = [getinput[:index], getinput[index:]]
 		if ENABLE_DICT:	
-			wx.CallAfter(self.popup.update, separated_input)
+			# wx.CallAfter(self.popup.update, separated_input)
+			self.popup.update(separated_input)
 			self.checkPopup()
 		self.val = replace(getinput)
 		self.text_output.SetLabel(self.val)
@@ -237,6 +241,11 @@ class Dictionary(wx.PopupWindow):
 		self.cursor = -1
 		self.previnp = []
 
+		self.listBox.Bind(wx.EVT_LISTBOX, self.onLeftClick)
+
+		#workaround to make sure EVT_LISTBOX doesn't get called after match found
+		self.Show(); self.Hide()
+
 	def update(self, raw_separated_inp):
 		head_raw, self.tail = raw_separated_inp
 		processed_inp = self.process_input(head_raw)
@@ -251,6 +260,10 @@ class Dictionary(wx.PopupWindow):
 			self.checkCursor()
 		self.listBox.SetSelection(self.cursor)
 		self.previnp = raw_separated_inp
+
+	def onLeftClick(self,event):
+		self.cursor = self.listBox.GetSelection()
+		self.requestInput()
 
 	def incCursor(self, inc):
 		self.cursor += inc
@@ -279,8 +292,6 @@ class Dictionary(wx.PopupWindow):
 		selected = self.listBox.GetString(self.cursor)
 		command = selected.split(' ')[-1]
 		wx.CallAfter(self.parent.writeOnInput,self.head+command+self.tail)
-		# print(self.head + command)
-
 
 	def hideWindow(self):
 		self.Hide()
