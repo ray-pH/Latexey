@@ -144,7 +144,7 @@ class Frame(wx.Frame):
 	def checkPopup(self):
 		if not ENABLE_DICT:
 			wx.CallAfter(self.popup.Hide)
-		elif self.popup.listBox.GetCount() > 0 :
+		elif self.popup.listBox.GetCount() > 1 :
 			wx.CallAfter(self.popup.Show)
 			self.positionPopup()
 		else:
@@ -292,6 +292,7 @@ class Dictionary(wx.PopupWindow):
 		selected = self.listBox.GetString(self.cursor)
 		command = selected.split(' ')[-1]
 		wx.CallAfter(self.parent.writeOnInput,self.head+command+self.tail)
+		
 
 	def hideWindow(self):
 		self.Hide()
