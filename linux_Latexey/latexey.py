@@ -19,8 +19,8 @@ ENABLE_DICT = p['ENABLE_DICT']
 class TaskBarIcon(wx.adv.TaskBarIcon):
 
 	def __init__(self, frame):
-		self.frame = frame
 		super(TaskBarIcon, self).__init__()
+		self.frame = frame
 		self.setIcon(TRAY_ICON)
 		self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.onLeftClick)
 
