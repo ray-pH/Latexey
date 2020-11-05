@@ -1,0 +1,16 @@
+INPUT_WIDTH:200
+INPUT_FONTSIZE:10
+OUTPUT_FONTSIZE:11
+
+//vertical padding of items
+PANEL_VPAD:3
+
+//interval in which the app is checking for keypress in the background (in ms)
+KEYBOARD_TIMER:30
+
+//waiting time to paste after panel is hid (in ms)
+PASTE_WAIT:50
+
+//dictionary height
+DICT_HEIGHT:100
+DICT_VPAD:10
