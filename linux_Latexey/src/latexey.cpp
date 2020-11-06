@@ -157,7 +157,7 @@ void Frame::onTimer(wxEvent& event){
 }
 
 void Frame::checkDict(){
-	if(this->listVec.size() > 1){
+	if(this->listVec.size() > 0){
 		this->repositionPopup();
 		if(!this->dictPopup->IsShown()) this->dictPopup->goShow();
 		this->dictPopup->setItems(this->listVec);

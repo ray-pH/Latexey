@@ -17,7 +17,7 @@ def getList(inp):
 	if not valid(inp) : return ""
 	r = re.compile(inp.replace('\\','\\\\'))
 	thetuple = [tup for tup in LATEX_COMMANDS if r.match(tup[0])][:10]
-	theItems = [sym+' '+com for (com,sym) in thetuple]
+	theItems = [sym+' '+com for (com,sym) in thetuple if (com != inp)]
 	st = ""
 	for item in theItems: st += item + ';'
 	return st[:-1]
