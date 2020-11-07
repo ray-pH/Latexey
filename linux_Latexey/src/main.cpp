@@ -1,3 +1,5 @@
+// g++ ./src/*.cpp -o Latexey `wx-config --cxxflags --libs` -I /usr/include/python3.8 -I ./include/ -lpython3.8 -lxdo -lX11
+
 #include "main.h"
 
 IMPLEMENT_APP(MyApp)
