@@ -101,9 +101,17 @@ void Frame::readConfig(){
 
 void Frame::onKeyDown(wxKeyEvent& event){
 	int key = event.GetKeyCode();
-	if     (key == WXK_ESCAPE) this->goHide();
-	else if(key == WXK_RETURN) this->onReadyPaste();
+	// if     (key == WXK_ESCAPE) this->goHide();
+	if     (key == WXK_ESCAPE) this->onQuit();
+	else if(key == WXK_RETURN) this->onEnter();
+	// move dict cursor
+	else if(key == WXK_DOWN)   this->movDict(1);
+	else if(key == WXK_UP)     this->movDict(-1);
 	else event.Skip();
+}
+
+void Frame::movDict(int dir){
+	if(this->dictPopup->IsShown()) this->dictPopup->incrCur(dir);
 }
 
 void Frame::onKeyUp(wxKeyEvent& event){
@@ -132,6 +140,19 @@ void Frame::onLeftClick(wxMouseEvent& event){
 void Frame::onDrag(wxMouseEvent& event){
 	if (event.LeftIsDown()) Move(wxGetMousePosition() - this->lastMousePos);
 	if (this->dictPopup->IsShown()) this->repositionPopup();
+}
+
+void Frame::onEnter(){
+	if(!(this->dictPopup->IsShown()) || (this->dictPopup->getSelectCur()==-1)){
+		this->onReadyPaste();
+	}else{
+		std::string toAppend = this->splitString(this->dictPopup->getSelectString()," ").back();
+		this->textInput->Clear();
+		this->textInput->AppendText(this->inputHead);
+		this->textInput->AppendText(toAppend);
+		this->textInput->AppendText(this->inputTail);
+		this->dictPopup->resetCur();
+	}
 }
 
 void Frame::onReadyPaste(){

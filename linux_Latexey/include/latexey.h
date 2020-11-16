@@ -31,9 +31,11 @@ class Frame : public wxFrame{
 		void onPaste(wxEvent& event);
 		void onTimer(wxEvent& event);
 		void goShow(wxEvent& event);
+		void movDict(int dir);
 		void checkDict();
 		void repositionPopup();
 		void processInput();
+		void onEnter();
 		void onReadyPaste();
 		void goHide();
 		void goShow();
