@@ -101,8 +101,8 @@ void Frame::readConfig(){
 
 void Frame::onKeyDown(wxKeyEvent& event){
 	int key = event.GetKeyCode();
-	// if     (key == WXK_ESCAPE) this->goHide();
-	if     (key == WXK_ESCAPE) this->onQuit();
+	if     (key == WXK_ESCAPE) this->goHide();
+	// if     (key == WXK_ESCAPE) this->onQuit();
 	else if(key == WXK_RETURN) this->onEnter();
 	// move dict cursor
 	else if(key == WXK_DOWN)   this->movDict(1);
